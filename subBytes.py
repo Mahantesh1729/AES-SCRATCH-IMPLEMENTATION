@@ -11,7 +11,10 @@ class SubBytes:
 
         for i in range(4):
             for j in range(4):
-                step_1_matrix[i][j] = SubBytes.subBytes[matrix[i][j][0]][matrix[i][j][1]]
+                a = hex(matrix[i][j]).replace("0x", "")
+                if len(a) == 1:
+                    a = '0' + a
+                step_1_matrix[i][j] = SubBytes.subBytes[int(a[0], 16)][int(a[1], 16)]
         
         return step_1_matrix
     

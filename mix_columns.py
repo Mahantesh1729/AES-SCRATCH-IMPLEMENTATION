@@ -52,7 +52,6 @@ class MixColumns:
             column = []
             for j in range(4):
                 column.append(matrix[j][i])
-            print(column)
             column = MixColumns.mixColumn(column)
             resultMatrix.append(column)
             
@@ -62,12 +61,12 @@ class MixColumns:
             
 # print(MixColumns.multiply(2, 'f2'))
 
-print(MixColumns.mixColumn(['63', 'f2', '7d', 'd4']))
+# print(MixColumns.mixColumn(['63', 'f2', '7d', 'd4']))
 
-print(MixColumns.multiplyMatrix([
-    ['63', 'c9', 'fe', '30'],
-    ['f2', '63', '26', 'f2'],
-    ['7d', 'd4', 'c9', 'c9'],
-    ['d4', 'fa', '63', '82']
-]))
+# print(MixColumns.multiplyMatrix([
+#     ['63', 'c9', 'fe', '30'],
+#     ['f2', '63', '26', 'f2'],
+#     ['7d', 'd4', 'c9', 'c9'],
+#     ['d4', 'fa', '63', '82']
+# ]))
                 
