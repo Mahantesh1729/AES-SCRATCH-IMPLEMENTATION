@@ -27,15 +27,15 @@ def generateRowColumnMatrix(data):
     
     return matrix
 
-def generateMatrix(ascii_list):
+def generateMatrix(alist):
     matrix = [[0 for j in range(4)] for i in range(4)]
-    length = len(ascii_list)
+    length = len(alist)
     k = 0
     for i in range(4):
         for j in range(4):
             if length > 0:
                 length -= 1
-                matrix[j][i] = ascii_list[k]
+                matrix[j][i] = alist[k]
                 k += 1
             else:
                 matrix[j][i] = '7a'
@@ -65,7 +65,6 @@ def addRoundKey(textBlock, wList):
 
 def transpose(wMatrix):
     matrix = [[0 for j in range(4)] for i in range(4)]
-    
     for i in range(4):
         for j in range(4):
             matrix[i][j] = wMatrix[j][i]
@@ -122,6 +121,7 @@ cipher_key = cipherKeyInput()
 
 wList = KeyGenerator.generateKey(cipher_key)
 
+# print(wList)
 
 ascii_row_column = InputTransformation.toAsciiRowColumn(plain_text)
 
@@ -174,3 +174,99 @@ enCipher(testMatrix2, wList)
 # print(step1)
 
 # print(SubBytes.subBytes)
+
+
+# ###############################################################################################################
+###################### decryption begins from here ######################
+
+
+
+def deCipher(cipherTextMatrix, wList):
+    
+    matrix = cipherTextMatrix.copy()
+    
+    w = wList[0:4].copy()
+    
+    w.reverse()
+    
+    w = transpose(w)
+    
+    
+    dummyW = [[j for j in i] for i in w]
+        
+    print("round key", 0,"is: ")
+    print(dummyW)
+
+    matrix = addRoundKey(matrix, w)
+    
+    dummyMatrix = matrix.copy()
+    
+    dummyMatrix = [[hex(j).replace("0x", "") for j in i] for i in dummyMatrix]
+    
+    for i in dummyMatrix:
+            print(i)
+    
+    print()
+    
+    for i in range(1, 11):
+
+        matrix = Permutation.invShiftRows(matrix)
+        
+        matrix = SubBytes.subByteTransformation(matrix)
+        
+        w = wList[(i * 4) : (i + 1) * 4]
+        
+        w.reverse()
+        
+        w = transpose(w)
+        
+        dummyW = [[j for j in i] for i in w]
+            
+        matrix = addRoundKey(matrix, w)
+        matrix = [[hex(j).replace("0x", "") for j in i] for i in matrix]
+        
+        dummyW = [[j for j in i] for i in w]
+        
+        print("round key", i,"is: ")
+        print(dummyW)
+        if i  != 10:
+            matrix = MixColumns.invMultiplyMatrix(matrix)
+            dummyMatrix = matrix.copy()
+    
+            dummyMatrix = [[hex(j).replace("0x", "") for j in i] for i in dummyMatrix]
+
+            for i in dummyMatrix:
+                    print(i)
+        else:
+            for i in matrix:
+                    print(i)
+            
+        
+            
+        print()
+    
+    
+    
+
+# the first step in decryption is to reverse the generated key
+
+wList.reverse()
+# print(wList)
+# print(len(wList))
+
+print("Enter the cipher text to be decrypted: ", end="")
+
+# cipherText = [hex(int(i)).replace("0x", "") for i in input().split(" ")]
+cipherText = [ i for i in input().split(" ")]
+
+# same function has been used for both plain and cipher text to generateMatrix
+
+cipherTextMatrix = generateMatrix(cipherText)
+
+# print(cipherTextMatrix)
+
+print("Generated plain text after deciphering is: ")
+
+# print(cipherTextMatrix)
+
+deCipher(cipherTextMatrix, wList)
