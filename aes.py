@@ -1,4 +1,5 @@
 from subBytes import SubBytes
+from invSubBytes import InvSubBytes
 from inputTransformation import InputTransformation
 from permutation import Permutation
 from keyGenerator import KeyGenerator
@@ -60,6 +61,8 @@ def addRoundKey(textBlock, wList):
     for i in range(4):
         for j in range(4):
             matrix[i][j] = matrix[i][j] ^ w[i][j]
+            
+   
     
     return matrix
 
@@ -79,6 +82,11 @@ def enCipher(plainTextBlock, wList):
     
     w = transpose(wList[0:4])
     
+    dummyW = [[j for j in i] for i in w]
+        
+    print("round key", 0,"is: ")
+    print(dummyW)
+    
     # print(matrix)
     
     matrix = addRoundKey(matrix, w)
@@ -89,18 +97,36 @@ def enCipher(plainTextBlock, wList):
     
     for i in range(1, 11):
         matrix = SubBytes.subByteTransformation(matrix)
-        # print(matrix)
+        print()
+        print("After substitution")
+        print(matrix)
+        print()
         matrix = Permutation.shiftRows(matrix)
-        # print(matrix)
+        print("After permutation")
+        print(matrix)
         
         if i  != 10:
             matrix = MixColumns.multiplyMatrix(matrix)
+            print()
+            print("After Mix Columns")
+            print(matrix)
         
         w = transpose(wList[(i * 4) : (i + 1) * 4])
-    
-        matrix = addRoundKey(matrix, w)
         
-        # print(matrix)
+        dummyW = [[j for j in i] for i in w]
+        
+        
+        print()
+        print("round key", i,"is: ")
+        print(dummyW)
+
+        
+        
+        matrix = addRoundKey(matrix, w)
+        print()
+        print("After add round key")
+        print(matrix)
+        print()
     
     for i in matrix:
         print(i)
@@ -147,13 +173,13 @@ testMatrix2 = generateMatrix(['00', '00', '00', '00', '00', '00', '00', '00', '0
 
 print()
 
-print("Generated cipher matrix for first test plain text 1")
+# print("Generated cipher matrix for first test plain text 1")
 
-enCipher(testMatrix1, wList)
-print()
+# enCipher(testMatrix1, wList)
+# print()
 
-print("Generated cipher matrix for first test plain text 2")
-enCipher(testMatrix2, wList)
+# print("Generated cipher matrix for first test plain text 2")
+# enCipher(testMatrix2, wList)
 # matrix = generateRowColumnMatrix(ascii_row_column)
 
 
@@ -212,7 +238,14 @@ def deCipher(cipherTextMatrix, wList):
 
         matrix = Permutation.invShiftRows(matrix)
         
-        matrix = SubBytes.subByteTransformation(matrix)
+        print("After invShiftRows")
+        print(matrix)
+        print()
+        
+        matrix = InvSubBytes.invSubByteTransformation(matrix)
+        
+        print("After substitution")
+        print(matrix)
         
         w = wList[(i * 4) : (i + 1) * 4]
         
@@ -230,21 +263,30 @@ def deCipher(cipherTextMatrix, wList):
         print("round key", i,"is: ")
         print(dummyW)
         if i  != 10:
-            matrix = MixColumns.invMultiplyMatrix(matrix)
             dummyMatrix = matrix.copy()
     
-            dummyMatrix = [[hex(j).replace("0x", "") for j in i] for i in dummyMatrix]
-
             for i in dummyMatrix:
                     print(i)
+            print()
+            matrix = MixColumns.invMultiplyMatrix(matrix)
+            
+            print("after mixColumns")
+            print(matrix)
         else:
             for i in matrix:
                     print(i)
-            
+            print()
+        # break
         
             
+    print()
+    # print(matrix)
+
+    for i in matrix:
+        for j in i:
+            print(chr(int(j, 16)), end=" ")
         print()
-    
+    print()
     
     
 
